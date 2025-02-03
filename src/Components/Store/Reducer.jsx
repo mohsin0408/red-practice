@@ -1,11 +1,11 @@
-// Store/Reducer.js
-import { TOGGLE_THEME, SET_SORT_OPTION } from "./Action";
-import { courseData } from "../../Data/Data"; // Assuming the courseData is imported here
+import { TOGGLE_THEME, SET_SORT_OPTION, SET_CAREGORY_TOGGLE } from "./Action";
+import { courseData, categoryData, authorData } from "../../Data/Data";
 
 const initialState = {
   theme: "light",
   sortOption: "normal",
-  sortedCourses: courseData.data, // Initial courses data
+  sortedCourses: courseData.data,
+  categoryToggle: "false",
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -14,7 +14,7 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, theme: state.theme === "dark" ? "light" : "dark" };
 
     case SET_SORT_OPTION:
-      const sortOption = action.payload;
+      const sortOption = action.payload; // action.payload contains the option (like "low-to-high" or "normal")
       let sortedCourses;
       switch (sortOption) {
         case "low-to-high":
@@ -31,6 +31,8 @@ const rootReducer = (state = initialState, action) => {
           sortedCourses = courseData.data;
       }
       return { ...state, sortOption, sortedCourses };
+
+    case SET_CAREGORY_TOGGLE:
 
     default:
       return state;
