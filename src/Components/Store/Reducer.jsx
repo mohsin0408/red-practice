@@ -1,11 +1,13 @@
-import { TOGGLE_THEME, SET_SORT_OPTION, SET_CAREGORY_TOGGLE } from "./Action";
-import { courseData, categoryData, authorData } from "../../Data/Data";
+import { TOGGLE_THEME, SET_SORT_OPTION } from "./Action";
+import { HANDLE_CATEGORY_FILTER, HANDLE_AUTHOR_FILTER } from "./Action";
+import { courseData } from "../../Data/Data";
 
 const initialState = {
   theme: "light",
   sortOption: "normal",
   sortedCourses: courseData.data,
-  categoryToggle: "false",
+  courses: courseData.data,
+  filteredCourses: courseData.data, // Initialize with all courses
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -32,7 +34,24 @@ const rootReducer = (state = initialState, action) => {
       }
       return { ...state, sortOption, sortedCourses };
 
-    case SET_CAREGORY_TOGGLE:
+    case HANDLE_CATEGORY_FILTER:
+      const filteredByCategory = state.courses.filter(
+        (course) =>
+          action.payload === "All" || course.category === action.payload
+      );
+      return {
+        ...state,
+        filteredCourses: filteredByCategory,
+      };
+
+    case HANDLE_AUTHOR_FILTER:
+      const filteredByAuthor = state.courses.filter(
+        (course) => action.payload === "All" || course.tutor === action.payload
+      );
+      return {
+        ...state,
+        filteredCourses: filteredByAuthor,
+      };
 
     default:
       return state;

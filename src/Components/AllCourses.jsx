@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { IoSearch } from "react-icons/io5";
-import { categoryData, courseData, authorData } from "../Data/Data";
+import { categoryData, authorData } from "../Data/Data";
+import { handleCategoryFilter, handleAuthorFilter } from "./Store/Action";
+import { useDispatch, useSelector } from "react-redux";
 
 const AllCourses = () => {
+  const dispatch = useDispatch();
   const [categoryToggle, setCategoryToggle] = useState(false);
   const [authorToggle, setAuthorToggle] = useState(false);
   const [category, setCategory] = useState("All");
   const [author, setAuthor] = useState("All");
-  const [filteredCourses, setFilteredCourses] = useState(
-    courseData?.data || []
-  );
+  const filteredCourses = useSelector((state) => state.filteredCourses);
 
   const handleCategoryToggle = () => {
     setCategoryToggle(!categoryToggle);
@@ -19,22 +20,14 @@ const AllCourses = () => {
     setAuthorToggle(!authorToggle);
   };
 
-  const handleCategoryFilter = (selectedCategory) => {
-    const filteredData = courseData?.data?.filter((course) => {
-      const matchCategory = selectedCategory === course.category;
-      return matchCategory;
-    });
-    setFilteredCourses(filteredData);
+  const handleCategorySelection = (selectedCategory) => {
+    dispatch(handleCategoryFilter(selectedCategory));
     setCategory(selectedCategory);
     setCategoryToggle(false);
   };
 
-  const handleAuthorFilter = (selectedAuthor) => {
-    const filteredData = courseData?.data?.filter((course) => {
-      const matchAuthor = selectedAuthor === course.tutor;
-      return matchAuthor;
-    });
-    setFilteredCourses(filteredData);
+  const handleAuthorSelection = (selectedAuthor) => {
+    dispatch(handleAuthorFilter(selectedAuthor));
     setAuthor(selectedAuthor);
     setAuthorToggle(false);
   };
@@ -52,7 +45,7 @@ const AllCourses = () => {
                   {categoryData?.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() => handleCategoryFilter(item)}
+                      onClick={() => handleCategorySelection(item)}
                       className="p-3 cursor-pointer hover:bg-gray-200">
                       {item}
                     </div>
@@ -71,7 +64,7 @@ const AllCourses = () => {
                   {authorData?.map((item, index) => (
                     <div
                       key={index}
-                      onClick={() => handleAuthorFilter(item)}
+                      onClick={() => handleAuthorSelection(item)}
                       className="p-3 cursor-pointer hover:bg-gray-200">
                       {item}
                     </div>
@@ -94,32 +87,32 @@ const AllCourses = () => {
 
       <div>
         <div className="grid items-center justify-center grid-cols-1 gap-5 p-4 md:grid-cols-2">
-          {filteredCourses?.map((obj, index) => {
-            return (
-              <div
-                key={index}
-                className=" w-[300px] h-full flex flex-col bg-[#f7f7f7] shadow-[0px_1px_#d4baf3] 
-          border border-[#d4baf3] rounded-[9px] overflow-hidden cursor-pointer lg:w-[380px] hover:border-[#9d5ee8] hover:border-2">
-                <img src={obj?.img} className="object-cover " />
-                <div className="flex flex-col justify-between h-full gap-10 px-4 py-5">
-                  <div>
-                    <span className=" text-[#5A00C7] text-lg font-bold ">
-                      {obj?.title}
-                    </span>
-                    <p className="text-sm text-black bg-white line-clamp-2 ">
-                      {obj?.desc}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between text-black bg-white ">
-                    <p>{obj?.tutor}</p>
-                    <p className="text-[#5a05c2] text-sm font-bold ">
-                      {obj?.price}
-                    </p>
-                  </div>
+          {/* Render the courses based on the filtered courses */}
+          {/* Assuming filteredCourses is being handled by Redux and not within this component */}
+          {filteredCourses?.map((course, index) => (
+            <div
+              key={index}
+              className="w-[300px] h-full flex flex-col bg-[#f7f7f7] shadow-[0px_1px_#d4baf3] 
+              border border-[#d4baf3] rounded-[9px] overflow-hidden cursor-pointer lg:w-[380px] hover:border-[#9d5ee8] hover:border-2">
+              <img src={course?.img} className="object-cover " />
+              <div className="flex flex-col justify-between h-full gap-10 px-4 py-5">
+                <div>
+                  <span className="text-[#5A00C7] text-lg font-bold">
+                    {course?.title}
+                  </span>
+                  <p className="text-sm text-black bg-white line-clamp-2 ">
+                    {course?.desc}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between text-black bg-white ">
+                  <p>{course?.tutor}</p>
+                  <p className="text-[#5a05c2] text-sm font-bold ">
+                    {course?.price}
+                  </p>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </div>
